@@ -1,0 +1,9 @@
+{
+	"name": "datafactory-kvanam",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "163ef4c6-429b-4ffb-a502-5d0dee6ef733",
+		"tenantId": "23fdc31a-8fcf-4750-ae8b-82037e278d67"
+	}
+}
