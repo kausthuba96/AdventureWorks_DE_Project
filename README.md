@@ -5,7 +5,7 @@ This project focuses on implementing a Data Engineering pipeline using Azure Clo
 
 ## Architecture Blueprint
 ### Data Flow:
-1. **Data Source:** HTTP file (APIs) from github repo
+1. **Data Source:** HTTP file (APIs) from Github Repo
 2. **Orchestration Tool:** Azure Data Factory
 3. **Landing Layer (Bronze Layer):** Data Lake Gen2 (Raw Data Store)
 4. **Processing Engine:** Databricks (Spark Clusters)
