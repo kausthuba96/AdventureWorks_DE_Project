@@ -1,0 +1,36 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "datafactory-kvanam"
+		},
+		"Datalakepractice_accountKey": {
+			"value": ""
+		},
+		"NetflixDataLake_accountKey": {
+			"value": ""
+		},
+		"StorageDatalake_accountKey": {
+			"value": ""
+		},
+		"Datalakepractice_properties_typeProperties_url": {
+			"value": "https://adventureworkskvanam.dfs.core.windows.net/"
+		},
+		"HttpNetflixdata_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/"
+		},
+		"Httplinkedservice_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com"
+		},
+		"NetflixDataLake_properties_typeProperties_url": {
+			"value": "https://netflixdatalakekvanam.dfs.core.windows.net/"
+		},
+		"StorageDatalake_properties_typeProperties_url": {
+			"value": "https://adventureworkskvanam.dfs.core.windows.net/"
+		},
+		"httppractice_properties_typeProperties_url": {
+			"value": "https://raw.githubusercontent.com/"
+		}
+	}
+}
