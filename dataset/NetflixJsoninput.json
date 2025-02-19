@@ -1,0 +1,21 @@
+{
+	"name": "NetflixJsoninput",
+	"properties": {
+		"annotations": [],
+		"type": "Json",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"netflix_source_url": {
+					"type": "string"
+				},
+				"netflix_sink_folder": {
+					"type": "string"
+				},
+				"netflix_sink_filename": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

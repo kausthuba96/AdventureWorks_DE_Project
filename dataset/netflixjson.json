@@ -1,0 +1,32 @@
+{
+	"name": "netflixjson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "NetflixDataLake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "Netflixgit.json",
+				"fileSystem": "parameters"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"netflix_source_url": {
+					"type": "string"
+				},
+				"netflix_sink_folder": {
+					"type": "string"
+				},
+				"netflix_sink_filename": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
