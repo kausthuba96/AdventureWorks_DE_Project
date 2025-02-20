@@ -284,7 +284,7 @@
 					"location": {
 						"type": "HttpServerLocation",
 						"relativeUrl": {
-							"value": "@dataset().netflix_source_url",
+							"value": "kausthuba96/Netflix-Data-Engineering-Project/refs/heads/main/Netflix_Azure_Data_Engineering_Project-main/Netflix_Azure_Data_Engineering_Project-main/RawData_AND_Notebooks/@{dataset().netflix_source_url}",
 							"type": "Expression"
 						}
 					},
@@ -297,6 +297,33 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/HttpNetflixdata')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Netflixvalidationdataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "NetflixDataLake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "raw"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/NetflixDataLake')]"
 			]
 		},
 		{
@@ -601,49 +628,17 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Netflix_Data_Pipeline')]",
+			"name": "[concat(parameters('factoryName'), '/Netflix_Meta_Pipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "Netflix_Lookup",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "JsonSource",
-								"storeSettings": {
-									"type": "AzureBlobFSReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "JsonReadSettings"
-								}
-							},
-							"dataset": {
-								"referenceName": "netflixjson",
-								"type": "DatasetReference",
-								"parameters": {}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "ForEach1",
+						"name": "Forallthefiles",
 						"type": "ForEach",
 						"dependsOn": [
 							{
-								"activity": "Netflix_Lookup",
+								"activity": "NetflixValidation",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -652,10 +647,9 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Netflix_Lookup').output.value",
+								"value": "@pipeline().parameters.p_array",
 								"type": "Expression"
 							},
-							"isSequential": true,
 							"activities": [
 								{
 									"name": "NetflixCopyActivity",
@@ -703,7 +697,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "netlfix_source_dataset",
+											"referenceName": "Netflixgitinput",
 											"type": "DatasetReference",
 											"parameters": {
 												"netflix_source_url": {
@@ -732,16 +726,112 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "NetflixValidation",
+						"type": "Validation",
+						"dependsOn": [
+							{
+								"activity": "GithubMetaData",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "Netflixvalidationdataset",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"timeout": "0.12:00:00",
+							"sleep": 10
+						}
+					},
+					{
+						"name": "Gitwebdata",
+						"type": "WebActivity",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"method": "GET",
+							"headers": {},
+							"url": "https://raw.githubusercontent.com/kausthuba96/Netflix-Data-Engineering-Project/refs/heads/main/Netflix_Azure_Data_Engineering_Project-main/Netflix_Azure_Data_Engineering_Project-main/RawData_AND_Notebooks/netflix_cast.csv"
+						}
+					},
+					{
+						"name": "GithubMetaData",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Gitwebdata",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "GithubMetaData",
+							"value": {
+								"value": "@activity('Gitwebdata').output.Response",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
 				},
+				"parameters": {
+					"p_array": {
+						"type": "array",
+						"defaultValue": [
+							{
+								"netflix_source_url": "netflix_directors.csv",
+								"netflix_sink_folder": "Netflix_directors",
+								"netflix_sink_filename": "netflix_directors.csv"
+							},
+							{
+								"netflix_source_url": "netflix_countries.csv",
+								"netflix_sink_folder": "Netflix_countries",
+								"netflix_sink_filename": "netflix_countries.csv"
+							},
+							{
+								"netflix_source_url": "netflix_category.csv",
+								"netflix_sink_folder": "Netflix_categories",
+								"netflix_sink_filename": "netflix_category.csv"
+							},
+							{
+								"netflix_source_url": "netflix_cast.csv",
+								"netflix_sink_folder": "Netflix_cast",
+								"netflix_sink_filename": "netflix_cast.csv"
+							}
+						]
+					}
+				},
+				"variables": {
+					"GithubMetaData": {
+						"type": "String"
+					}
+				},
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/netflixjson')]",
-				"[concat(variables('factoryId'), '/datasets/netlfix_source_dataset')]",
+				"[concat(variables('factoryId'), '/datasets/Netflixvalidationdataset')]",
+				"[concat(variables('factoryId'), '/datasets/Netflixgitinput')]",
 				"[concat(variables('factoryId'), '/datasets/NetflixSinkdata')]"
 			]
 		}
