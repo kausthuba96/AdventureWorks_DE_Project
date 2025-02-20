@@ -410,43 +410,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/netflixjson')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "NetflixDataLake",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "Netflixgit.json",
-						"fileSystem": "parameters"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"netflix_source_url": {
-							"type": "string"
-						},
-						"netflix_sink_folder": {
-							"type": "string"
-						},
-						"netflix_sink_filename": {
-							"type": "string"
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/NetflixDataLake')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/netlfix_source_dataset')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
