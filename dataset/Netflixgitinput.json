@@ -16,7 +16,7 @@
 			"location": {
 				"type": "HttpServerLocation",
 				"relativeUrl": {
-					"value": "@dataset().netflix_source_url",
+					"value": "kausthuba96/Netflix-Data-Engineering-Project/refs/heads/main/Netflix_Azure_Data_Engineering_Project-main/Netflix_Azure_Data_Engineering_Project-main/RawData_AND_Notebooks/@{dataset().netflix_source_url}",
 					"type": "Expression"
 				}
 			},
